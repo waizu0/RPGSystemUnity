@@ -42,6 +42,8 @@ public class CreateCampaignScript : MonoBehaviour
     ///////Selected the campaign end
     
     public Button _doneButton; //The done button
+    public GameObject _campaignListDisplayGameObject; //The game object that displays the campaign list
+    
 
 
     //TypeCampaignName is called when the player types in the campaign name input field
@@ -104,6 +106,7 @@ public class CreateCampaignScript : MonoBehaviour
             //But if the campaign name is not empty, the done button will be interactable
             _doneButton.interactable = true;
         }
+
     }
 
     //Done is called when the player clicks the done button
@@ -130,7 +133,7 @@ public class CreateCampaignScript : MonoBehaviour
             File.WriteAllText(campaignDataPath, _campaignDescription); //Creates a file for the campaign data and writes the campaign description to it
 
             Debug.Log("Campaign created!");
-            LoadCampaigns();
+            LoadCampaigns(); //Loads the campaigns
         }
 
     }
@@ -143,6 +146,8 @@ public class CreateCampaignScript : MonoBehaviour
         //Then it'll create a for loop that will create a button for each campaign
         for (int i = 0; i < numberOfCampaigns; i++)
         {
+            
+
             //Instantiate the campaign button
             Transform campaignButton = Instantiate(_campaignButton, _content.transform.position, Quaternion.identity); //Instantiates the campaign button
             campaignButton.SetParent(_content.transform); //Sets the parent of the campaign button to the content
@@ -150,8 +155,10 @@ public class CreateCampaignScript : MonoBehaviour
             string campaignName = Directory.GetDirectories(_campaignPath)[i].Substring(_campaignPath.Length); //Gets the name of the campaign
             campaignButton.GetComponentInChildren<TextMeshProUGUI>().text = campaignName; //Sets the text of the campaign button to the campaign name
             campaignButton.name = campaignName; //Sets the name of the campaign button to the campaign name
-            
+
+
         }
+        
     }
 
     //LoadACampaign is called when the player clicks a campaign button
@@ -164,6 +171,16 @@ public class CreateCampaignScript : MonoBehaviour
         _selectedCampaignNameText.text = _gm._selectedCampaign; //Sets the selected campaign name text to the campaign name
         _selectedCampaignDescriptionText.text = _gm._selectedCampaignDescription; //Sets the selected campaign description text to the campaign description
        }
+    }
+
+    public void Return(){
+
+        //Void called when the return button is clicked, it'll destroy the campaign list display game object, so when load again, it'll create a new one
+        GameObject[] options = GameObject.FindGameObjectsWithTag("Options"); //Finds all the options
+        foreach (GameObject option in options)
+        {
+            Destroy(option); //Destroys the options 
+        }
     }
     
 }

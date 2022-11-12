@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.IO; //Allows us to use files
 
 public class GlobalManager : MonoBehaviour
 {
@@ -14,4 +15,7 @@ public class GlobalManager : MonoBehaviour
 
     [TextArea(5, 6)]
     public string _selectedCampaignDescription; //The description of the selected campaign
+
+    public string _mapName; //The name of the map
+
 }

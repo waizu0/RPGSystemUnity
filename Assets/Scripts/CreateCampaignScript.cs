@@ -182,5 +182,11 @@ public class CreateCampaignScript : MonoBehaviour
             Destroy(option); //Destroys the options 
         }
     }
+
+    public void GoToCampaign()
+    {
+        //Void called when the go to campaign button is clicked, it'll load the campaign scene
+        SceneManager.LoadScene("MainGame"); //Loads the main game scene
+    }
     
 }

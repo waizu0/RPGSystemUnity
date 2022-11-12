@@ -129,7 +129,7 @@ public class CreateCampaignScript : MonoBehaviour
             string campaignData = Directory.CreateDirectory(_campaignPath + _campaignName + "/Campaign Data").ToString(); //Creates a folder for the campaign data in the campaign folder
             
             
-            string campaignDataPath = _campaignPath + _campaignName + "/Campaign Data/campaignData.txt"; //The path to the campaign data file
+            string campaignDataPath = _campaignPath + _campaignName + "/Campaign Data/campaignDescription.txt"; //The path to the campaign data file
             File.WriteAllText(campaignDataPath, _campaignDescription); //Creates a file for the campaign data and writes the campaign description to it
 
             Debug.Log("Campaign created!");

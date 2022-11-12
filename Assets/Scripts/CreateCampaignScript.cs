@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro; //TextMeshPro, a cool text package
 using System.IO; //Allows us to use files
+using UnityEngine.SceneManagement; //Allows us to use scenes
+using UnityEngine.UI; //Allows us to use UI elements
 
 public class CreateCampaignScript : MonoBehaviour
 {
@@ -27,6 +29,19 @@ public class CreateCampaignScript : MonoBehaviour
     public TextMeshProUGUI _characterCountDescriptionText; //The text that displays the character count for the campaign description
     public TextMeshProUGUI _characterCountNameText; //The text that displays the character count for the campaign name
     public TextMeshProUGUI _campaignExistsText; //The text that displays if the campaign already exists
+    
+    public GameObject _content; //The content of the scroll view, we'll use this to instantiate the campaign buttons
+    public Transform _campaignButton; //The campaign button prefab
+
+    public GlobalManager _gm; //The global manager
+
+    ///////Selected the campaign start
+    public TextMeshProUGUI _selectedCampaignNameText; //The text that displays the selected campaign
+    public TextMeshProUGUI _selectedCampaignDescriptionText; //The text that displays the selected campaign description
+    public GameObject _selectedCampaignPanel; //The panel that displays the selected campaign
+    ///////Selected the campaign end
+    
+    public Button _doneButton; //The done button
 
 
     //TypeCampaignName is called when the player types in the campaign name input field
@@ -49,6 +64,7 @@ public class CreateCampaignScript : MonoBehaviour
     void Awake()
     {
         // Directory.CreateDirectory(_campaignPath + "Sample Campaign"); //Create a sample folder for the campaigns, test only
+        _gm = GameObject.Find("CampaignGlobalManager").GetComponent<GlobalManager>(); //Finds the global manager
 
     }
 
@@ -68,6 +84,25 @@ public class CreateCampaignScript : MonoBehaviour
             /*If the _campaignNameBox is focused and the player presses the tab key,
              the _campaignDescriptionBox will be focused*/
             _campaignDescriptionBox.Select(); //Focuses the _campaignDescriptionBox
+        }
+
+        //Just for testing purposes, when pressing the space bar, the load campaigns function will be called
+        // if (Input.GetKeyDown(KeyCode.Space))
+        // {
+        //     LoadCampaigns();
+        // }
+
+        LoadACampaign();
+
+        if (_campaignName == "")
+        {
+            //This will turn the button not interactable if the campaign name is empty
+            _doneButton.interactable = false;
+        }
+        else
+        {
+            //But if the campaign name is not empty, the done button will be interactable
+            _doneButton.interactable = true;
         }
     }
 
@@ -95,9 +130,40 @@ public class CreateCampaignScript : MonoBehaviour
             File.WriteAllText(campaignDataPath, _campaignDescription); //Creates a file for the campaign data and writes the campaign description to it
 
             Debug.Log("Campaign created!");
+            LoadCampaigns();
         }
 
     }
     
+    //LoadCampaigns is called when the player clicks the load campaigns button
+    public void LoadCampaigns()
+    {
+        int numberOfCampaigns = Directory.GetDirectories(_campaignPath).Length; //Gets the number of folders in the campaigns folder 
+
+        //Then it'll create a for loop that will create a button for each campaign
+        for (int i = 0; i < numberOfCampaigns; i++)
+        {
+            //Instantiate the campaign button
+            Transform campaignButton = Instantiate(_campaignButton, _content.transform.position, Quaternion.identity); //Instantiates the campaign button
+            campaignButton.SetParent(_content.transform); //Sets the parent of the campaign button to the content
+
+            string campaignName = Directory.GetDirectories(_campaignPath)[i].Substring(_campaignPath.Length); //Gets the name of the campaign
+            campaignButton.GetComponentInChildren<TextMeshProUGUI>().text = campaignName; //Sets the text of the campaign button to the campaign name
+            campaignButton.name = campaignName; //Sets the name of the campaign button to the campaign name
+            
+        }
+    }
+
+    //LoadACampaign is called when the player clicks a campaign button
+    public void LoadACampaign()
+    {
+       
+       if(_gm._selectedCampaign != "")
+       {
+         _selectedCampaignPanel.SetActive(true); //Sets the selected campaign panel to inactive
+        _selectedCampaignNameText.text = _gm._selectedCampaign; //Sets the selected campaign name text to the campaign name
+        _selectedCampaignDescriptionText.text = _gm._selectedCampaignDescription; //Sets the selected campaign description text to the campaign description
+       }
+    }
     
 }

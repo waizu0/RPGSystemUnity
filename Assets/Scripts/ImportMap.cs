@@ -17,35 +17,23 @@ public class ImportMap : MonoBehaviour, IPointerClickHandler
     {
         _mapImage = GetComponent<Image>(); //Finds the image of the map
         _gm = GameObject.Find("CampaignGlobalManager").GetComponent<GlobalManager>(); //Finds the global manager
+        Texture2D texture = new Texture2D(2, 2); //Creates a new texture
 
-        //Detect if exists a mapData.txt inside Campaign Data of the current campaign
-        if (File.Exists(System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments) + "/RPG Engine/Campaigns/" + _gm._selectedCampaign + "/Campaign Data" + "/mapData.txt"))
-        {
-            
-            //Read the mapData.txt file
-            string[] mapData = File.ReadAllLines(System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments) + "/RPG Engine/Campaigns/" + _gm._selectedCampaign + "/Campaign Data" + "/mapData.txt");
 
-            //Set the map name to the name of the map
-            _gm._mapName = mapData[0] + ".png";
-
-            Debug.Log("Map name: " + _gm._mapName); //Prints the map name to the console
-
-            //Load the map image from the map folder inside the selected campaign on documents
-            var storage = _mapImage.sprite = AssetDatabase.LoadAssetAtPath<Sprite>(System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments) + "/RPG Engine/Campaigns/" + _gm._selectedCampaign + "/Maps/" + _gm._mapName);
-
-            if(storage == null)
-            {
-               Debug.LogError("Map not found, the variable storage is " + storage); //Prints the error to the console
-            }
-            else
-            {
-                Debug.Log("Map found"); //Prints the map found to the console
-            }
-        }
+        /*When the game starts, the map will load the last used map, we know what the last used map is because
+        in the Maps folder in Documents/RPG Engine/Campaigns/Campaign Data, there is a txt file
+        called mapData.txt, it contains the name of the last used PNG file, we must import it from
+        the Maps folder in Documents/RPG Engine/Campaigns/Campaign Data/Maps/, and set as the image of the _mapImage*/
+        
+        //The path to the mapData.txt file, Documents/RPG Engine/Campaigns/[_gm._selectedCampaign]/Campaign Data/mapData.txt
+        
+        string mapDataPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments) + "/RPG Engine/Campaigns/" + _gm._selectedCampaign + "/Campaign Data/mapData.txt";
+        string image = File.ReadAllText(mapDataPath) + ".png"; //The name of the last used PNG file
+        texture.LoadImage(File.ReadAllBytes(System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments) + "/RPG Engine/Campaigns/" + _gm._selectedCampaign + "/Maps/" + image));
+        
+        Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f), 100);
+        _mapImage.sprite = sprite; //Sets the image of the _mapImage to the last used map
     }
-
-    
-
     public void OnPointerClick(PointerEventData pointerEventData)
     {
         string path = EditorUtility.OpenFilePanel("Overwrite with png, jpg, or jpeg", "", "png,jpg,jpeg"); //Opens a file panel to select a file
@@ -66,7 +54,11 @@ public class ImportMap : MonoBehaviour, IPointerClickHandler
 
         _gm._mapName = RandomMapName + ".png";
 
-        File.WriteAllText(System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments) + "/RPG Engine/Campaigns/" + _gm._selectedCampaign + "/Campaign Data" + "/mapData.txt", RandomMapName); //Writes the random map name to the file, it'll load the map when the campaign is loaded
+
+        //Make that the mapData.txt file contains the name of the last used PNG file
+        string mapDataPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments) + "/RPG Engine/Campaigns/" + _gm._selectedCampaign + "/Campaign Data/mapData.txt";
+        File.WriteAllText(mapDataPath, RandomMapName);
+
     }
     
 }

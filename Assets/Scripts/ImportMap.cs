@@ -41,7 +41,10 @@ public class ImportMap : MonoBehaviour, IPointerClickHandler
     }
     public void OnPointerClick(PointerEventData pointerEventData)
     {
-        // string path = EditorUtility.OpenFilePanel("Overwrite with png, jpg, or jpeg", "", "png,jpg,jpeg"); //Opens a file panel to select a file
+       //Check if click twice
+         if (pointerEventData.clickCount == 2)
+         {
+               // string path = EditorUtility.OpenFilePanel("Overwrite with png, jpg, or jpeg", "", "png,jpg,jpeg"); //Opens a file panel to select a file
 
         //Using SFB, opens a file panel to select a file, stores the path to the file in a string, every file type is allowed
         string[] pathArray = StandaloneFileBrowser.OpenFilePanel("Overwrite with png, jpg, or jpeg", "", "", false);
@@ -70,6 +73,8 @@ public class ImportMap : MonoBehaviour, IPointerClickHandler
         //Make that the mapData.txt file contains the name of the last used PNG file
         string mapDataPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments) + "/RPG Engine/Campaigns/" + _gm._selectedCampaign + "/Campaign Data/mapData.txt";
         File.WriteAllText(mapDataPath, RandomMapName);
+              
+         }
 
     }
     

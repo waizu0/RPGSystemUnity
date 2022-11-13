@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro; //TextMeshPro, a cool text package
 using System.IO; //Allows us to use files
+using UnityEngine.UI; //Allows us to use UI elements
 
 public class GameController : MonoBehaviour
 {
@@ -14,6 +15,11 @@ public class GameController : MonoBehaviour
     public GlobalManager _gm; //The global manager
     public GameObject foldersPanel; //The panel that displays the folders
     public Transform _folderButton; //The button that displays the folder name
+    
+    public Sprite[] _dices; //The sprites of the dices
+    public int[] _diceMaxValues; //The max values of the d20, D20 = 20, D12 = 12, D10 = 10, D8 = 8, D6 = 6, D4 = 4
+    public Button _diceButton; //The button that rolls the d20
+    public int _currentDiceLimit; //The current limit of the dice
 
     private void Awake()
      {
@@ -29,7 +35,7 @@ public class GameController : MonoBehaviour
 
     public void RollD20()
     {
-        _d20Roll = Random.Range(1, 21); //Rolls a d20
+        _d20Roll = Random.Range(1, _currentDiceLimit+1); //Rolls a d20
         _d20RollText.text = _d20Roll.ToString(); //Sets the text to the result of the d20 roll
         Debug.Log("Roll: " + _d20Roll); //Prints the result of the d20 roll to the console
         _gameSource.PlayOneShot(_diceClip); //Plays the dice sound
@@ -50,5 +56,13 @@ public class GameController : MonoBehaviour
        }
     }
 
+
+    public void setMaxValue(int value)
+    {
+      //0 = D20, 1 = D12, 2 = D10, 3 = D8, 4 = D6, 5 = D4
+         
+         _currentDiceLimit = _diceMaxValues[value]; //Sets the current dice limit to the max value of the dice
+         _diceButton.GetComponent<Image>().sprite = _dices[value]; //Sets the sprite of the dice button to the sprite of the dice
+    }
 
 }

@@ -4,7 +4,8 @@ using UnityEngine;
 using UnityEngine.EventSystems; //Allows us to use EventSystems
 using System.IO; //Allows us to use files
 using UnityEngine.UI; //Allows us to use UI elements
-using UnityEditor; //Allows us to use the editor
+// using UnityEditor; //Allows us to use the editor
+using SFB;
 
 
 public class ImportMap : MonoBehaviour, IPointerClickHandler
@@ -13,8 +14,12 @@ public class ImportMap : MonoBehaviour, IPointerClickHandler
     public GlobalManager _gm; //The global manager
     public Image _mapImage; //The image of the map
 
+
+
+
     void Start()
     {
+        
         _mapImage = GetComponent<Image>(); //Finds the image of the map
         _gm = GameObject.Find("CampaignGlobalManager").GetComponent<GlobalManager>(); //Finds the global manager
         Texture2D texture = new Texture2D(2, 2); //Creates a new texture
@@ -36,7 +41,14 @@ public class ImportMap : MonoBehaviour, IPointerClickHandler
     }
     public void OnPointerClick(PointerEventData pointerEventData)
     {
-        string path = EditorUtility.OpenFilePanel("Overwrite with png, jpg, or jpeg", "", "png,jpg,jpeg"); //Opens a file panel to select a file
+        // string path = EditorUtility.OpenFilePanel("Overwrite with png, jpg, or jpeg", "", "png,jpg,jpeg"); //Opens a file panel to select a file
+
+        //Using SFB, opens a file panel to select a file, stores the path to the file in a string, every file type is allowed
+        string[] pathArray = StandaloneFileBrowser.OpenFilePanel("Overwrite with png, jpg, or jpeg", "", "", false);
+        string path = pathArray[0];
+        Debug.Log(path);
+
+
         Texture2D texture = new Texture2D(2, 2); //Creates a new texture
         
         //if don't exist, create a subfolder on the campaign folder called 'Maps'

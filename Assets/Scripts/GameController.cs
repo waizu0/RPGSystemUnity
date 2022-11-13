@@ -21,6 +21,12 @@ public class GameController : MonoBehaviour
     public Button _diceButton; //The button that rolls the d20
     public int _currentDiceLimit; //The current limit of the dice
 
+    public bool _isMaster; //Is the player the master of the campaign?
+    public bool _isPlayer; //Is the player a player in the campaign?
+
+
+
+
     private void Awake()
      {
         _gm = GameObject.Find("CampaignGlobalManager").GetComponent<GlobalManager>(); //Finds the global manager
@@ -63,6 +69,7 @@ public class GameController : MonoBehaviour
          
          _currentDiceLimit = _diceMaxValues[value]; //Sets the current dice limit to the max value of the dice
          _diceButton.GetComponent<Image>().sprite = _dices[value]; //Sets the sprite of the dice button to the sprite of the dice
+         _d20RollText.text = _currentDiceLimit.ToString(); //Sets the text of the d20 roll to the max value of the dice
     }
 
 }

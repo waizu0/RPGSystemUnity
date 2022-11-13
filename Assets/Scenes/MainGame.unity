@@ -1009,9 +1009,15 @@ MonoBehaviour:
   _dices:
   - {fileID: 21300000, guid: 8072afca512d61945b6f215917eadf61, type: 3}
   - {fileID: 21300000, guid: 31c50f56073013249b0ce597386434f8, type: 3}
+  - {fileID: 21300000, guid: 271c5340be79853499389e383c3a1dbf, type: 3}
+  - {fileID: 21300000, guid: fee58e54c48f1b345a36da86888738ed, type: 3}
+  - {fileID: 21300000, guid: 104440cf101132d49b80ac80e98a0da9, type: 3}
+  - {fileID: 21300000, guid: a076fdb158ff6614dbf1ec3343885c5d, type: 3}
   _diceMaxValues: 140000000c0000000a000000080000000600000004000000
   _diceButton: {fileID: 1658434289}
   _currentDiceLimit: 20
+  _isMaster: 0
+  _isPlayer: 0
 --- !u!82 &428041270
 AudioSource:
   m_ObjectHideFlags: 0

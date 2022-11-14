@@ -35,6 +35,8 @@ public class CreateCampaignScript : MonoBehaviour
 
     public GlobalManager _gm; //The global manager
 
+    public string[] _necessaryFolders;
+
     ///////Selected the campaign start
     public TextMeshProUGUI _selectedCampaignNameText; //The text that displays the selected campaign
     public TextMeshProUGUI _selectedCampaignDescriptionText; //The text that displays the selected campaign description
@@ -134,6 +136,8 @@ public class CreateCampaignScript : MonoBehaviour
 
             Debug.Log("Campaign created!");
             LoadCampaigns(); //Loads the campaigns
+
+            CreateExtraFolders();
         }
 
     }
@@ -189,4 +193,14 @@ public class CreateCampaignScript : MonoBehaviour
         SceneManager.LoadScene("MainGame"); //Loads the main game scene
     }
     
+    public void CreateExtraFolders()
+    {
+        //Void called when the create extra folders button is clicked, it'll create the extra folders for the campaign
+        
+        //Create a folder for each element in array _necessaryFolders
+        foreach (string folder in _necessaryFolders)
+        {
+            Directory.CreateDirectory(_campaignPath + _campaignName + "/" + folder); //Creates a folder for each element in the array
+        }
+    }
 }

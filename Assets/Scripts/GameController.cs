@@ -4,6 +4,7 @@ using UnityEngine;
 using TMPro; //TextMeshPro, a cool text package
 using System.IO; //Allows us to use files
 using UnityEngine.UI; //Allows us to use UI elements
+using SFB; //Standalone File Browser, a cool file browser package
 
 public class GameController : MonoBehaviour
 {
@@ -25,6 +26,10 @@ public class GameController : MonoBehaviour
     public bool _isPlayer; //Is the player a player in the campaign?
     public string _campaignName; //The name of the campaign
     public TextMeshProUGUI _campaignNameText; //The text that displays the campaign name
+
+    public Transform _songButtonPrefab; //The song button prefab
+    public GameObject _songContent; //The content of the scroll view, we'll use this to instantiate the song buttons
+    public AudioClip _currentSong; //The current song that is playing, imported
 
 
 
@@ -78,4 +83,56 @@ public class GameController : MonoBehaviour
          _d20RollText.text = _currentDiceLimit.ToString(); //Sets the text of the d20 roll to the max value of the dice
     }
 
+
+    //////////////////////////////////PLAYLIST STUFF////////////////////////////////////
+
+    public void ImportSong()
+    {
+
+         string backSlash = System.IO.Path.DirectorySeparatorChar.ToString(); //We can't just use \ to remove the last character of a string, so we have to use this
+         string path = StandaloneFileBrowser.OpenFilePanel("Open File", "", "mp3", false)[0]; //Opens the file browser and gets the path to the file, only mp3 files are allowed
+         
+         string songName = path.Substring(path.LastIndexOf(backSlash) + 1); //Gets the name of the song
+         songName = songName.Replace(".mp3", ".mp3"); //Removes the .mp3 from the song name
+
+
+         Transform _newSongButton = Instantiate(_songButtonPrefab, transform.position, Quaternion.identity); //Instantiates the song button
+         _newSongButton.SetParent(_songContent.transform, false); //Sets the parent of the new song button to the song content
+
+         WWW www = new WWW("file:///" + path); //Creates a new WWW object
+         _currentSong = www.GetAudioClip(false, true); //Sets the current song to the song that was imported
+         _newSongButton.GetComponentInChildren<TextMeshProUGUI>().text = songName; //Sets the text of the new song button to the name of the song
+
+         _gameSource.clip = _currentSong; //Sets the clip of the audio source to the current song
+
+         if(!_gameSource.isPlaying)
+         {
+             _gameSource.Play();
+         }
+
+         File.Copy(path, _folderPath + "/Songs/" + songName); //Copies the song to the songs folder
+
+    }
+
+    public void StopSong()
+    {
+         _gameSource.Pause(); //Pauses the song
+    }
+
+    public void ContinueSong()
+    {
+         _gameSource.UnPause(); //Unpauses the song
+    }
+
+    public void RandomOrder()
+    {
+         _gameSource.loop = false; //Sets the loop of the audio source to false
+        
+        //Get every .mp3 file in folder Songs in the campaign folder
+         string[] songs = Directory.GetFiles(_folderPath + "/Songs", "*.mp3");
+
+         print(songs.Length); //Prints the amount of songs to the console
+
+    }
+    
 }

@@ -6200,6 +6200,11 @@ MonoBehaviour:
   - NPCs
   - Quests
   - Equipment
+  - Maps
+  - Creatures
+  - Races
+  - Classes
+  - Songs
   _selectedCampaignNameText: {fileID: 912766686}
   _selectedCampaignDescriptionText: {fileID: 990353012}
   _selectedCampaignPanel: {fileID: 1955212051}

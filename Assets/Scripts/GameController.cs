@@ -23,13 +23,19 @@ public class GameController : MonoBehaviour
 
     public bool _isMaster; //Is the player the master of the campaign?
     public bool _isPlayer; //Is the player a player in the campaign?
-
+    public string _campaignName; //The name of the campaign
+    public TextMeshProUGUI _campaignNameText; //The text that displays the campaign name
 
 
 
     private void Awake()
      {
         _gm = GameObject.Find("CampaignGlobalManager").GetComponent<GlobalManager>(); //Finds the global manager
+
+
+        
+         _campaignName = _gm._selectedCampaign; //Sets the campaign name to the campaign name in the global manager
+         _campaignNameText.text = _campaignName; //Sets the text that displays the campaign name to the campaign name
         _gameSource = GetComponent<AudioSource>(); //Finds the audio source
         _folderPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments) + "/RPG Engine/Campaigns/" + _gm._selectedCampaign; //Sets the folder path to the path to the folder that contains the campaign data
     }

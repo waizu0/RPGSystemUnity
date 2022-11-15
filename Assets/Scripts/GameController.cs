@@ -30,7 +30,25 @@ public class GameController : MonoBehaviour
     public Transform _songButtonPrefab; //The song button prefab
     public GameObject _songContent; //The content of the scroll view, we'll use this to instantiate the song buttons
     public AudioClip _currentSong; //The current song that is playing, imported
+    public bool _RandomizeSongs; //Should the songs be randomized?
 
+    public GameObject _randomizeButton; //The randomize button
+    public List<string> _songNames = new List<string>(); //The names of the songs
+    public int _currentSongIndex; //The index of the song
+    public string _currentSongName; //The name of the current song
+
+
+   void Update()
+    {
+        //if the current song isn't null, and ended, play the next song
+         if (_currentSong != null && !_gameSource.isPlaying)
+         {
+               PlayNextSong();
+         }
+
+         CurrentPlayingIndex();
+
+    }
 
 
     private void Awake()
@@ -48,6 +66,21 @@ public class GameController : MonoBehaviour
     void Start()
     {
        InstantiateSubFolders(); //Instantiates the subfolders
+       InstantiateAllSongs(); //Instantiates all the songs
+       _currentSongName = _songNames[0]; //Sets the current song name to the first song name
+    }
+
+    public void CurrentPlayingIndex()
+    {
+        
+            for (int i = 0; i < _songNames.Count; i++)
+            {
+                if (_currentSongName == _songNames[i])
+                {
+                    _currentSongIndex = i;
+                }
+            }
+        
     }
 
     public void RollD20()
@@ -112,6 +145,7 @@ public class GameController : MonoBehaviour
 
          File.Copy(path, _folderPath + "/Songs/" + songName); //Copies the song to the songs folder
 
+
     }
 
     public void StopSong()
@@ -128,11 +162,90 @@ public class GameController : MonoBehaviour
     {
          _gameSource.loop = false; //Sets the loop of the audio source to false
         
-        //Get every .mp3 file in folder Songs in the campaign folder
-         string[] songs = Directory.GetFiles(_folderPath + "/Songs", "*.mp3");
+         List<string> songs = new List<string>();
+         foreach (string song in Directory.GetFiles(_folderPath + "/Songs/")) //This foreach loop gets all the songs in the songs folder
+         {
+             songs.Add(song); //Adds the song to the list
+         }
 
-         print(songs.Length); //Prints the amount of songs to the console
+         string randomSong = songs[Random.Range(0, songs.Count)]; //Gets a random song from the list
+         WWW www = new WWW("file:///" + randomSong); //Creates a new WWW object
+         _currentSong = www.GetAudioClip(false, true); //Sets the current song to the song that was imported
+         _gameSource.clip = _currentSong; //Sets the clip of the audio source to the current song
+         _gameSource.Play(); //Plays the song
+
+         _RandomizeSongs = !_RandomizeSongs; //Toggles the randomize songs bool
+         _randomizeButton.GetComponentInChildren<TextMeshProUGUI>().color = _RandomizeSongs ? Color.green : Color.white; //Sets the color of the randomize button to green if the randomize songs bool is true, otherwise it sets it to white
+    }
+
+    public void InstantiateAllSongs()
+    {
+         //This void will instantiate all music buttons in the music panel
+         string backSlash = "/"; //I use it as a variable, because if i change from / to \, it will be so much easier to change
+         string songName = ""; //The name of the song
+
+         //This foreach loop gets all the songs in the songs folder
+         foreach (string song in Directory.GetFiles(_folderPath + "/Songs/"))
+         {
+             Transform _newSongButton = Instantiate(_songButtonPrefab, transform.position, Quaternion.identity); //Instantiates the song button
+             _newSongButton.SetParent(_songContent.transform, false); //Sets the parent of the new song button to the song content
+
+             songName = song.Substring(song.LastIndexOf(backSlash) + 1); //Gets the name of the song
+             songName = songName.Replace(".mp3", ""); //Removes the .mp3 from the song name
+             _newSongButton.GetComponentInChildren<TextMeshProUGUI>().text = songName; //Sets the text of the new song button to the name of the song
+             print("Song: " + songName);
+            _songNames.Add(songName); //Adds the song name to the list of song names
+
+         }
+
 
     }
-    
+
+    public void PlayNextSong()
+    {
+         _gameSource.Stop(); //Stops the current song
+
+         if(_RandomizeSongs)
+         {
+             RandomOrder(); //Plays a random song
+         }
+         else
+         {
+            
+            //If the list ended, play the 0 song
+            if(_currentSongIndex == _songNames.Count - 1)
+            {
+                _currentSongIndex = 0;
+            }
+            else
+            {
+               _currentSongIndex+=1; //If the list didn't end, play the next song by increasing the index by 1
+                WWW www = new WWW("file:///" + _folderPath + "/Songs/" + _songNames[_currentSongIndex] + ".mp3"); //Plays the next song
+            }
+         }
+    }
+
+    public void PlaySong(string song)
+      {
+            _gameSource.Stop(); //Stops the current song
+   
+            string path = _folderPath + "/Songs/" + song + ".mp3"; //Gets the path to the song
+            WWW www = new WWW("file:///" + path); //Creates a new WWW object
+            _currentSong = www.GetAudioClip(false, true); //Sets the current song to the song that was imported
+            _gameSource.clip = _currentSong; //Sets the clip of the audio source to the current song
+            _gameSource.Play(); //Plays the song
+      }
+
+      public void PlayStart()
+      {
+         if(_RandomizeSongs)
+         {
+             RandomOrder(); //Plays a random song
+         }
+         else
+         {
+             //Play the element 0 of the list
+               WWW www = new WWW("file:///" + _folderPath + "/Songs/" + _songNames[0] + ".mp3"); //Plays the first song in the list
+         }
+      }
 }

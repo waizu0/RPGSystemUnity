@@ -5,6 +5,7 @@ using TMPro; //TextMeshPro, a cool text package
 using System.IO; //Allows us to use files
 using UnityEngine.UI; //Allows us to use UI elements
 using SFB; //Standalone File Browser, a cool file browser package
+using UnityEngine.EventSystems;
 
 public class GameController : MonoBehaviour
 {
@@ -37,6 +38,11 @@ public class GameController : MonoBehaviour
     public int _currentSongIndex; //The index of the song
     public string _currentSongName; //The name of the current song
 
+     public Slider _progressBar; //The progress slider
+    public SliderDetection _sliderDetection; //The slider detection script
+
+    public Slider _volumeSlider; //The volume slider that controls the volume of the music
+
 
    void Update()
     {
@@ -47,6 +53,24 @@ public class GameController : MonoBehaviour
          }
 
          CurrentPlayingIndex();
+
+        // ProgressSlider(); //Update the progress slider
+
+        if (_currentSong != null)
+        {
+            Debug.Log("Current song is not null");
+            _progressBar.maxValue = _currentSong.length;
+            _progressBar.value = _gameSource.time;
+        }
+
+        // //Set the value as the current time of the song
+        // if (_currentSong != null && _sliderDetection.IsSliderClicked == false)
+        // {
+        //     _progressBar.value = _gameSource.time;
+        // }
+
+        VolumeControl(); //Update the volume of the music based on the volume slider
+
 
     }
 
@@ -115,6 +139,9 @@ public class GameController : MonoBehaviour
          _diceButton.GetComponent<Image>().sprite = _dices[value]; //Sets the sprite of the dice button to the sprite of the dice
          _d20RollText.text = _currentDiceLimit.ToString(); //Sets the text of the d20 roll to the max value of the dice
     }
+
+
+    #region Songs Methods
 
 
     //////////////////////////////////PLAYLIST STUFF////////////////////////////////////
@@ -233,6 +260,10 @@ public class GameController : MonoBehaviour
             WWW www = new WWW("file:///" + path); //Creates a new WWW object
             _currentSong = www.GetAudioClip(false, true); //Sets the current song to the song that was imported
             _gameSource.clip = _currentSong; //Sets the clip of the audio source to the current song
+
+            //restarts the song from the beginning
+            _gameSource.time = 0;
+
             _gameSource.Play(); //Plays the song
       }
 
@@ -248,4 +279,26 @@ public class GameController : MonoBehaviour
                WWW www = new WWW("file:///" + _folderPath + "/Songs/" + _songNames[0] + ".mp3"); //Plays the first song in the list
          }
       }
+
+
+
+
+
+      //I'll implement it later, spending too much time on this already
+
+    //  public void ProgressBar()
+    //  {
+    //     if(_sliderDetection.IsSliderClicked)
+    //         _gameSource.time = _progressBar.value;
+        
+    //  }
+
+    //Void to control the volume of the game using a slider
+    public void VolumeControl()
+    {
+         _gameSource.volume = _volumeSlider.value; //Sets the volume of the audio source to the value of the volume slider
+    }
+
+    #endregion
+
 }

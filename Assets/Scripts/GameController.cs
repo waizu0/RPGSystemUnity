@@ -43,7 +43,6 @@ public class GameController : MonoBehaviour
 
     public Slider _volumeSlider; //The volume slider that controls the volume of the music
 
-
    void Update()
     {
         //if the current song isn't null, and ended, play the next song
@@ -80,6 +79,7 @@ public class GameController : MonoBehaviour
         _gm = GameObject.Find("CampaignGlobalManager").GetComponent<GlobalManager>(); //Finds the global manager
 
 
+        Application.runInBackground = true; //Allows the game to run in the background (for the music)
         
          _campaignName = _gm._selectedCampaign; //Sets the campaign name to the campaign name in the global manager
          _campaignNameText.text = _campaignName; //Sets the text that displays the campaign name to the campaign name

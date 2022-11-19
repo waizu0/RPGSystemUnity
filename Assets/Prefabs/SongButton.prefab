@@ -312,3 +312,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9f5a322328f6e940aa7c1799ac13239, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  songNameText: {fileID: 0}
+  _characLimit: 38
